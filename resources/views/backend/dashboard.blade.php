@@ -122,44 +122,39 @@ active
           <div class="panel-body statement-card">
             <div class="statement-card-head">
               <h3>Latest Withdrow Request</h3>
-              <p><sup>$</sup><b>207,430</b></p>
+              <p><small>Amount: </small><b>SA {{ number_format($widthdrawAmound, 2) }}</b></p>
             </div>
             <table class="table table-responsive">
               <tbody>
+                @foreach($latestWithdraw as $item)
                 <tr>
-                  <th scope="row">ORDER ID 4111</th>
-                  <td>johndoe</td>
-                  <td>N1</td>
-                  <td class="text-success"><b>$16</b></td>
+                  <th scope="row">{{ $item->created_at->format('d-M-y') }}</th>
+                  <td>{{ $item->user->name }}</td>
+                  <td>
+                    @if($item->status == 'Paid')
+                    @php
+                    $status = 'success';
+                    @endphp
+                    @elseif($item->status == 'Cancel')
+                    @php
+                    $status = 'danger';
+                    @endphp
+                    @elseif($item->status == 'Accept')
+                    @php
+                    $status = 'info';
+                    @endphp
+                    @elseif($item->status == 'Pending')
+                    @php
+                    $status = 'warning';
+                    @endphp
+                    @endif
+                    <span class="badge badge-pill badge-{{$status}}">
+                      {{ $item->status }}
+                    </span>
+                  </td>
+                  <td class="text-success"><b>SA {{ number_format($item->amount, 2) }}</b></td>
                 </tr>
-
-                <tr>
-                  <th scope="row">ORDER ID 4111</th>
-                  <td>johndoe</td>
-                  <td>N1</td>
-                  <td class="text-success"><b>$16</b></td>
-                </tr>
-
-                <tr>
-                  <th scope="row">ORDER ID 4111</th>
-                  <td>johndoe</td>
-                  <td>N1</td>
-                  <td class="text-success"><b>$16</b></td>
-                </tr>
-
-                <tr>
-                  <th scope="row">ORDER ID 4111</th>
-                  <td>johndoe</td>
-                  <td>N1</td>
-                  <td class="text-success"><b>$16</b></td>
-                </tr>
-
-                <tr>
-                  <th scope="row">ORDER ID 4111</th>
-                  <td>johndoe</td>
-                  <td>N1</td>
-                  <td class="text-success"><b>$16</b></td>
-                </tr>
+                @endforeach
               </tbody>
             </table>
           </div>
@@ -360,7 +355,7 @@ active
                       {{ $item->status }}
                     </span>
                   </td>
-                  <td class="text-success"><b>SA {{ $item->amount }}</b></td>
+                  <td class="text-success"><b>SA {{ number_format($item->amount, 2) }}</b></td>
                 </tr>
                 @endforeach
               </tbody>

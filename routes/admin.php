@@ -44,10 +44,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified', 'admin']
 
   # Withdraw System
   Route::get('withdraw/{id}', [SellerController::class, 'show'])->name('show');
+  
+
+  Route::get('withdraw', [SellerController::class, 'paymentWithdraw'])->name('paymentWithdraw'); 
   Route::get('withdraw/{withdraw}/update/{status}', [SellerController::class, 'updateStatus']);
-
-  Route::get('withdraw', [SellerController::class, 'paymentWithdraw'])->name('paymentWithdraw'); // Not Done
-
   // Seller
   Route::get('seller-list', [SellerController::class, 'sellerList'])->name('sellerList');
   Route::get('seller/{id}', [SellerController::class, 'sellerShow'])->name('sellerShow');

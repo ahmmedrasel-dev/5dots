@@ -336,30 +336,6 @@
   });
 
   $(document).ready(function () {
-
-    $('.color').click(function () {
-      $('li a').removeClass("color-active");
-      $(this).addClass("color-active");
-    });
-
-    $('.color').dblclick(function () {
-      $(this).removeClass("color-active");
-    })
-
-
-    $('.size').click(function () {
-      $('li a').removeClass("size-active");
-      $(this).addClass("size-active");
-    })
-
-    $('.size').dblclick(function () {
-      $(this).removeClass("size-active");
-    })
-  });
-
-
-
-  $(document).ready(function () {
     $('.cart-btn').on('click', function (e) {
       let selectElementColor = document.querySelector('#color');
       let selectElementSize = document.querySelector('#size');
@@ -369,8 +345,8 @@
       let quantity = $('.qty-input').val()
       let color = selectElementColor.options[selectElementColor.selectedIndex].value;
       let size = selectElementSize.options[selectElementSize.selectedIndex].value;
-      let hasColor = document.querySelector(".color");
-      let hasSize = document.querySelector(".size");
+      let hasColor = document.querySelector("#color");
+      let hasSize = document.querySelector("#size");
 
       if (hasColor && color == undefined) {
         let title = "You have to select a Color !";

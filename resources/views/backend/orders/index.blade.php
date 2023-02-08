@@ -117,7 +117,7 @@
                       </span>
                     </td>
                     <td>
-                      {{ $item->user->name }}
+                      {{ $item->user->email }}
                     </td>
 
 
@@ -320,9 +320,9 @@
                     </tr>
                     <tr>
                       <td>
-                        <strong class="m-b-md">Customer Details</strong><br>
-                        @if(auth()->user()->role == 'Admin' || auth()->user()->role == 'Customer')
 
+                        @if(auth()->user()->role == 'Admin' || auth()->user()->role == 'Customer')
+                        <strong class="m-b-md">Customer Details</strong><br>
                         @if($singleOrder->user && $singleOrder->user->userDetail)
                         <b>Name:</b> {{ $singleOrder->user->name }}<br>
                         <b>Email:</b> {{ $singleOrder->user->email }}<br>
@@ -337,24 +337,18 @@
                         @endif
 
                         @else
-
+                        <strong class="m-b-md">Seller Details</strong><br>
                         <b>Name:</b> {{ $singleOrder->user->name }}<br>
                         <b>Email:</b> {{ $singleOrder->user->email }}<br>
                         <b>Phone:</b> {{ $singleOrder->user->phone ?? '' }}<br>
-                        <p><b>Shipping: </b>
-                          {{ $singleOrder->order->user->userDetail->postal_code }},
-                          {{ $singleOrder->order->user->userDetail->address }}<br>
-                          {{ $singleOrder->order->city($singleOrder->order->user->userDetail->city_id) }}<br>
-                          {{ $singleOrder->order->state($singleOrder->order->user->userDetail->state_id) }}<br>
-                        </p>
-
                         @endif
                       </td>
 
 
                       <td class="text-right">
-                        <strong class="m-b-md">Order Details</strong><br>
+
                         @if(auth()->user()->role == 'Admin' || auth()->user()->role == 'Customer')
+                        <strong class="m-b-md">Order Details</strong><br>
                         <p>
                           <b>Date: </b>{{ $singleOrder->created_at->format('d/m/y') }}<br><b>Order Status: </b>
                           {{ $singleOrder->status }}<br>
@@ -362,7 +356,7 @@
                           <b>Payment Status: </b> {{ $singleOrder->is_paid }}
                         </p>
                         @else
-
+                        <strong class="m-b-md">Customer Details</strong><br>
                         <p>
                           {{ $singleOrder->order->user->name }}<br>
                           {{ $singleOrder->order->user->email }}<br>

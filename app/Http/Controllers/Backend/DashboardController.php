@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrderExport;
+use App\Models\Withdraw;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
@@ -49,15 +50,23 @@ class DashboardController extends Controller
       $products = count(array_filter(auth()->user()->product->toArray(), function ($product) {
         return $product['status'] == 'Active' ? 1 : 0;
       }));
-      $sales = Order::whereStatus('Complete')->value(DB::raw("SUM(amount - coupon_discount_amount)"));
+     
+      $sales=  Order::join('order_details', 'orders.id', '=', 'order_details.order_id')
+                    ->where('order_details.user_id', auth()->id())
+                    ->where('orders.status', 'complete')
+                    ->sum('orders.amount', '-', 'orders.coupon_discount_amount');
+      
+      
       return view($this->VIEW_PATH . 'dashboard', compact('customers', 'products', 'orders', 'amount', 'sales'));
     } elseif (auth()->user()->role == 'Admin') {
       $bestSellingProduct = OrderDetails::select('product_id', DB::raw('count(*) as total'))->groupBy('product_id')->orderBy('total', 'DESC')->limit(5)->get();
       $shops = Shop::whereStatus('Active')->count();
+      $widthdrawAmound= Withdraw::sum('amount');
+      $latestWithdraw = Withdraw::orderBy('created_at', 'DESC')->paginate(5);
       $customers = User::whereRole('Customer')->count();
       $products = Product::whereStatus('Active')->count();
       $sales = Order::whereStatus('Complete')->value(DB::raw("SUM(amount - coupon_discount_amount)"));
-      return view($this->VIEW_PATH . 'dashboard', compact('customers', 'products', 'sales', 'orders', 'amount', 'shops', 'bestSellingProduct')); 
+      return view($this->VIEW_PATH . 'dashboard', compact('customers', 'products', 'sales', 'orders', 'amount', 'shops', 'bestSellingProduct' ,'latestWithdraw', 'widthdrawAmound')); 
     }
     return view($this->VIEW_PATH . 'dashboard', compact('orders'));
   }
@@ -107,6 +116,7 @@ class DashboardController extends Controller
   public function show(Order $order, $id)
   {
     $page = 'show';
+    
 
     if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Customer') {
       $singleOrder = $order->findOrFail($id);
@@ -121,7 +131,7 @@ class DashboardController extends Controller
     $singleOrder = $orderDetails->findOrFail($id);
     return view($this->VIEW_PATH . 'orders.index', compact('singleOrder', 'page'));
   }
-
+ 
   public function updateStatus(Order $order, $status)
   {
     if ($status == 'complete') {
